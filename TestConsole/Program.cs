@@ -14,10 +14,11 @@ while (true)
 
     try
     {
-        object? rst = app.Execute(input, StringComparison.OrdinalIgnoreCase);
+        object? rst =
+            app.Execute(input, StringComparison.OrdinalIgnoreCase);
 
         if (rst != null)
-        Console.WriteLine(rst);
+            Console.WriteLine(rst);
     }
     catch(Exception ex)
     {
