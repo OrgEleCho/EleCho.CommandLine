@@ -190,7 +190,7 @@ namespace EleCho.CommandLine
                     continue;
 
                 if (s.OptionName.Equals(optionAttribute.Name, stringComparison) ||
-                    s.OptionShortName == optionAttribute.ShortName)
+                    s.OptionShortName != '\0' && s.OptionShortName == optionAttribute.ShortName)
                     return i;
             }
 

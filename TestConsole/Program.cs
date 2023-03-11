@@ -6,16 +6,6 @@ using System.Text;
 Console.WriteLine("Hello, World!");
 
 MyCommandLineApp app = new MyCommandLineApp();
-
-Task.Run(async () =>
-{
-    while (true)
-    {
-        await Task.Delay(1000);
-        ConsoleSc.WriteLine("QWQ Running");
-    }
-});
-
 ConsoleSc.Prompt = "> ";
 while (true)
 {
@@ -44,6 +34,17 @@ class MyCommandLineApp : CommandLineApp
     {
         if (toUpper)
             text = text.ToUpper();
+
+        Console.WriteLine(text);
+    }
+    [Command]
+    public void Echo(string text, bool toUpper, [Option("name")] string? myName = null)
+    {
+        if (toUpper)
+            text = text.ToUpper();
+
+        if (myName != null)
+            Console.Write($"{myName}: ");
 
         Console.WriteLine(text);
     }
