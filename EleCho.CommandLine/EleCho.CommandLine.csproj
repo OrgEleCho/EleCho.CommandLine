@@ -5,7 +5,7 @@
     <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
-    <Version>1.0.2</Version>
+    <Version>1.0.3</Version>
     <Authors>EleCho</Authors>
     <Description>Simpe commandline framework</Description>
     <RepositoryUrl>https://github.com/OrgEleCho/EleCho.CommandLine</RepositoryUrl>

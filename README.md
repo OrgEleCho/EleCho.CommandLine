@@ -58,18 +58,43 @@ HELLO WORLD
 Use custom Option:
 
 ```csharp
-class MyCommandLineApp : CommandLineApp
+[Command]
+public void Echo(string text, bool toUpper, [Option("name")] string? myName = null)
 {
-    [Command]
-    public void Echo(string text, [Option("name")] string? myName = null)
-    {
-        if (toUpper)
-            text = text.ToUpper();
+    if (toUpper)
+        text = text.ToUpper();
 
-        if (myName != null)
-            Console.Write($"{myName}: ");
+    if (myName != null)
+        Console.Write($"{myName}: ");
 
-        Console.WriteLine(text);
-    }
+    Console.WriteLine(text);
 }
 ```
+
+Use short name for Option:
+
+```csharp
+[Command]
+public void Echo(string text, bool toUpper, [Option("name", 'n')] string? myName = null)
+{
+    if (toUpper)
+        text = text.ToUpper();
+
+    if (myName != null)
+        Console.Write($"{myName}: ");
+
+    Console.WriteLine(text);
+}
+```
+
+Variable number of arguments are also supported:
+
+```csharp
+[Command]
+public int Sum(params int[] nums)
+{
+    return nums.Sum();
+}
+```
+
+> All basic types like numbers, string, char, enum are supported.
