@@ -213,5 +213,7 @@ namespace EleCho.CommandLine
 
             return methodInfo.Method.Invoke(this, paramValues);
         }
+
+        public object? Execute(string commandline) => Execute(commandline, StringComparison.OrdinalIgnoreCase);
     }
 }
