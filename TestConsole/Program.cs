@@ -15,7 +15,7 @@ while (true)
     try
     {
         object? rst =
-            app.Execute(input, StringComparison.OrdinalIgnoreCase);
+            app.Execute();
 
         if (rst != null)
             Console.WriteLine(rst);

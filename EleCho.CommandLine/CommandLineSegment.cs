@@ -1,4 +1,6 @@
-﻿namespace EleCho.CommandLine
+﻿using System;
+
+namespace EleCho.CommandLine
 {
     public struct CommandLineSegment
     {

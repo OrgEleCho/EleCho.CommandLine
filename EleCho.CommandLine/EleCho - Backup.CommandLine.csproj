@@ -10,8 +10,6 @@
     <Description>Simpe commandline framework</Description>
     <RepositoryUrl>https://github.com/OrgEleCho/EleCho.CommandLine</RepositoryUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <PackageTags>commandline, cmd</PackageTags>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
   <ItemGroup>
