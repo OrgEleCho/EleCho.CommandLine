@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="NullLib.ConsoleEx" Version="1.0.4.4" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\EleCho.CommandLine\EleCho.CommandLine.csproj" />
   </ItemGroup>
 

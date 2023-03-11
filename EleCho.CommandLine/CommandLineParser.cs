@@ -156,17 +156,17 @@ namespace EleCho.CommandLine
         }
 
         /// <summary>
-        /// 解析命令行
+        /// Parse a commandline
         /// </summary>
-        /// <param name="commandLine"></param>
-        /// <param name="commandName"></param>
-        /// <param name="argvSegments"></param>
-        /// <exception cref="ArgumentException"></exception>
-        public static void Parse(string commandLine, out string commandName, out List<CommandLineSegment> argvSegments)
+        /// <param name="commandline">A valid commandline</param>
+        /// <param name="commandName">Command name</param>
+        /// <param name="argvSegments">Command argument segments</param>
+        /// <exception cref="ArgumentException">Throws when commandline is empty, command name is quoted or command name is not an identifier</exception>
+        public static void Parse(string commandline, out string commandName, out List<CommandLineSegment> argvSegments)
         {
-            Split(commandLine, out var segments);
+            Split(commandline, out var segments);
             if (segments.Count == 0)
-                throw new ArgumentException("Invalid commandline");
+                throw new ArgumentException("Invalid commandline, empty commandline");
 
             var commandNameSegment = segments[0];
 

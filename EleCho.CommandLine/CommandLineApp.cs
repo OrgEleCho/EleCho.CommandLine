@@ -36,6 +36,9 @@ namespace EleCho.CommandLine
                 if (method.GetCustomAttribute<CommandAttribute>() is not CommandAttribute commandAttribute)
                     continue;
 
+                if (methodInfos.Any(methodInfo => methodInfo.Method.Name.Equals(method.Name)))
+                    throw new InvalidOperationException($"Method '{method.Name}' is duplicated");
+
                 ParameterInfo[] paramInfos = method.GetParameters();
                 SymbolAttribute[] symbolAttributes = new SymbolAttribute[paramInfos.Length];
 
@@ -45,7 +48,7 @@ namespace EleCho.CommandLine
                     if (paramInfo.GetCustomAttribute<SymbolAttribute>() is not SymbolAttribute symbolAttribute)
                     {
                         if (!CommandLineParser.IsConvertible(paramInfo))
-                            throw new InvalidOperationException($"Method {method.Name}, Parameter {paramInfo.Name}, Type is not convertible type");
+                            throw new InvalidOperationException($"Method '{method.Name}', Parameter '{paramInfo.Name}', Type is not convertible type");
 
                         if (paramInfo.HasDefaultValue || paramInfo.ParameterType == typeof(bool))
                             symbolAttribute = new OptionAttribute();
@@ -72,16 +75,16 @@ namespace EleCho.CommandLine
             catch (FormatException)
             {
                 if (optionName != null)
-                    throw new ArgumentException($"Command {commandName}, Parameter {paramInfo.Name}, Option {optionName} cannot convert to type {paramInfo.ParameterType.Name}");
+                    throw new ArgumentException($"Command '{commandName}', Parameter '{paramInfo.Name}', Option '{optionName}' cannot convert to type '{paramInfo.ParameterType.Name}'");
                 else
-                    throw new ArgumentException($"Command {commandName}, Parameter {paramInfo.Name}, cannot convert to type {paramInfo.ParameterType.Name}");
+                    throw new ArgumentException($"Command '{commandName}', Parameter '{paramInfo.Name}', cannot convert to type '{paramInfo.ParameterType.Name}'");
             }
             catch (OverflowException)
             {
                 if (optionName != null)
-                    throw new ArgumentException($"Command {commandName}, Parameter {paramInfo.Name}, Option {optionName} number is to large or too small for type {paramInfo.ParameterType.Name}");
+                    throw new ArgumentException($"Command '{commandName}', Parameter '{paramInfo.Name}', Option '{optionName}' number is to large or too small for type '{paramInfo.ParameterType.Name}'");
                 else
-                    throw new ArgumentException($"Command {commandName}, Parameter {paramInfo.Name}, number is to large or too small for type {paramInfo.ParameterType.Name}");
+                    throw new ArgumentException($"Command '{commandName}', Parameter '{paramInfo.Name}', number is to large or too small for type '{paramInfo.ParameterType.Name}'");
             }
         }
 
@@ -101,7 +104,7 @@ namespace EleCho.CommandLine
                     else if (paramInfo.ParameterType == typeof(bool))
                         paramValue = false;
                     else
-                        throw new ArgumentException($"Command {commandName}, Parameter {paramInfo.Name} is required");
+                        throw new ArgumentException($"Command '{commandName}', Parameter '{paramInfo.Name}' is required");
                 }
                 else
                 {
@@ -116,7 +119,7 @@ namespace EleCho.CommandLine
                     {
                         int optionValueSegmentIndex = optionSegmentIndex + 1;
                         if (optionValueSegmentIndex >= argvSegments.Count)
-                            throw new ArgumentException($"Command {commandName}, Parameter {paramInfo.Name}, Option {optionSegment.OptionName} value is required");
+                            throw new ArgumentException($"Command '{commandName}', Parameter '{paramInfo.Name}', Option '{optionSegment.OptionName}' value is required");
 
                         CommandLineSegment optionValueSegment = argvSegments[optionValueSegmentIndex];
 
@@ -143,11 +146,16 @@ namespace EleCho.CommandLine
                         }
 
                         object? arrElemValue;
-                        GetValueForArgument(segment.Value, paramInfo.ParameterType, out arrElemValue, commandName, paramInfo, null);
+                        GetValueForArgument(segment.Value, elementType, out arrElemValue, commandName, paramInfo, null);
                         argvSegments.RemoveAt(j);
+
+                        args.Add(arrElemValue);
                     }
 
-                    paramValue = args.ToArray();
+                    Array paramValueArr = Array.CreateInstance(elementType, args.Count);
+                    for (int j = 0; j < args.Count; j++)
+                        paramValueArr.SetValue(args[j], j);
+                    paramValue = paramValueArr;
                 }
                 else
                 {
@@ -155,7 +163,7 @@ namespace EleCho.CommandLine
                         CommandLineParser.FindSegmentForValue(argvSegments);
 
                     if (valueSegmentIndex < 0)
-                        throw new ArgumentException($"Command {commandName}, Parameter {paramInfo.Name} is required");
+                        throw new ArgumentException($"Command '{commandName}', Parameter '{paramInfo.Name}' is required");
 
                     CommandLineSegment valueSegment = argvSegments[valueSegmentIndex];
 
@@ -165,7 +173,7 @@ namespace EleCho.CommandLine
             }
             else
             {
-                throw new InvalidOperationException($"Unknown SymbolAttribute {symbolAttribute}");
+                throw new InvalidOperationException($"Unknown SymbolAttribute '{symbolAttribute}'");
             }
         }
 
@@ -175,7 +183,7 @@ namespace EleCho.CommandLine
 
             CommandLineMethodInfo? methodInfo = methods.FirstOrDefault(m => m.Method.Name.Equals(commandName, stringComparison));
             if (methodInfo is null)
-                throw new ArgumentException($"Command {commandName} not found");
+                throw new ArgumentException($"Command '{commandName}' not found");
 
             object?[] paramValues = new object?[methodInfo.Parameters.Length];
 
@@ -205,17 +213,21 @@ namespace EleCho.CommandLine
                 paramValues[i] = paramValue;
             }
 
+            // 如果有多余的参数就报错
             foreach (var argvSegment in argvSegments)
             {
                 if (argvSegment.IsOption)
-                    throw new ArgumentException($"Command {commandName}, Option '{argvSegment.OptionName}' is not defined");
+                    throw new ArgumentException($"Command '{commandName}', Option '{argvSegment.OptionName}' is not defined");
                 else
-                    throw new ArgumentException($"Command {commandName}, Value '{argvSegment.Value}' is unexpected");
+                    throw new ArgumentException($"Command '{commandName}', Value '{argvSegment.Value}' is unexpected");
             }
 
             return methodInfo.Method.Invoke(this, paramValues);
         }
 
-        public object? Execute(string commandline) => Execute(commandline, StringComparison.OrdinalIgnoreCase);
+        public object? Execute(string commandline)
+        {
+            return Execute(commandline, StringComparison.OrdinalIgnoreCase);
+        }
     }
 }

@@ -1,28 +1,39 @@
-﻿using EleCho.CommandLine;
+﻿using NullLib.ConsoleEx;
+using EleCho.CommandLine;
 using System.Text;
 
 // See https://aka.ms/new-console-template for more information
 Console.WriteLine("Hello, World!");
 
 MyCommandLineApp app = new MyCommandLineApp();
+
+Task.Run(async () =>
+{
+    while (true)
+    {
+        await Task.Delay(1000);
+        ConsoleSc.WriteLine("QWQ Running");
+    }
+});
+
+ConsoleSc.Prompt = "> ";
 while (true)
 {
-    Console.Write("> ");
-    var input = Console.ReadLine();
+    var input = ConsoleSc.ReadLine();
     if (input == null)
         return;
 
     try
     {
         object? rst =
-            app.Execute();
+            app.Execute(input);
 
         if (rst != null)
-            Console.WriteLine(rst);
+            ConsoleSc.WriteLine($"{rst}");
     }
     catch(Exception ex)
     {
-        Console.WriteLine(ex.Message);
+        ConsoleSc.WriteLine(ex.Message);
     }
 }
 
@@ -41,5 +52,11 @@ class MyCommandLineApp : CommandLineApp
     public int Add(int a, int b)
     {
         return a + b;
+    }
+
+    [Command]
+    public int Sum(params int[] nums)
+    {
+        return nums.Sum();
     }
 }
