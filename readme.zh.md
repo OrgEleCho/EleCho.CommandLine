@@ -1,10 +1,10 @@
-# EleCho.CommandLine [![nuget](https://img.shields.io/nuget/v/EleCho.CommandLine)](https://www.nuget.org/packages/EleCho.CommandLine) [![](https://img.shields.io/badge/-中文-green)](README.zh.md)
+# EleCho.CommandLine [![nuget](https://img.shields.io/nuget/v/EleCho.CommandLine)](https://www.nuget.org/packages/EleCho.CommandLine)
 
-Simple commandline framework.
+简易命令行框架.
 
-## Usage
+## 使用
 
-Create a commandline app.
+创建一个命令行应用.
 
 ```csharp
 class MyCommandLineApp : CommandLineApp
@@ -20,7 +20,7 @@ class MyCommandLineApp : CommandLineApp
 }
 ```
 
-Execute commands from user input.
+从用户输入执行命令.
 
 ```csharp
 MyCommandLineApp app = new MyCommandLineApp();
@@ -46,7 +46,7 @@ while (true)
 }
 ```
 
-Preview:
+预览:
 
 ```txt
 /echo "hello world"
@@ -55,7 +55,7 @@ hello world
 HELLO WORLD
 ```
 
-Use custom Option:
+使用自定义 Option:
 
 ```csharp
 [Command]
@@ -71,7 +71,7 @@ public void Echo(string text, bool toUpper, [Option("name")] string? myName = nu
 }
 ```
 
-Use short name for Option:
+对 Option 使用短名称:
 
 ```csharp
 [Command]
@@ -87,7 +87,7 @@ public void Echo(string text, bool toUpper, [Option("name", 'n')] string? myName
 }
 ```
 
-Variable number of arguments are also supported:
+可变长参数也是支持的:
 
 ```csharp
 [Command]
@@ -97,4 +97,4 @@ public int Sum(params int[] nums)
 }
 ```
 
-> All basic types like numbers, string, char, enum are supported.
+> 所有基础类型诸如数字, 字符串, 字符, 枚举都是受支持的.
